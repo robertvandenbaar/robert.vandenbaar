@@ -35,7 +35,7 @@
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 15px 20px;
+            padding: 20px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -56,14 +56,16 @@
         }
 
         .brand span {
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
         }
 
-        nav divalinks {
+        nav {
             display: flex;
             gap: 25px;
+            color: #444;
         }
 
         .nav-link {
@@ -81,7 +83,7 @@
         }
 
         section {
-            padding: 120px 20px 60px 20px; 
+            padding: 140px 20px 60px 20px; 
             max-width: 1200px;
             margin: 0 auto;
             min-height: 80vh;
@@ -92,17 +94,12 @@
         }
 
         section h2 {
-            font-size: 2rem;
-            font-weight: 400;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        section p.subtitle {
-            color: #888;
-            margin-bottom: 30px;
-            font-size: 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+            color: #ddd;
+            text-transform: none;
         }
 
         .portfolio-grid {
@@ -149,7 +146,10 @@
                 text-align: center;
             }
             section {
-                padding-top: 160px;
+                padding-top: 180px;
+            }
+            .brand span {
+                font-size: 1.4rem;
             }
             .portfolio-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -168,22 +168,20 @@
             </a>
             <nav>
                 <a href="#fotografie" class="nav-link">Fotografie</a>
-				|
-                <a href="#houtbewerking" class="nav-link">Houtbewerking</a>
+                |
+                <a href="#woodworking" class="nav-link">Houtbewerking</a>
             </nav>
         </div>
     </header>
 
     <section id="fotografie">
         <h2>Fotografie</h2>
-        <div class="portfolio-grid" id="grid-fotografie">
-        </div>
+        <div class="portfolio-grid" id="grid-fotografie"></div>
     </section>
 
-    <section id="houtbewerking">
+    <section id="woodworking">
         <h2>Houtbewerking</h2>
-        <div class="portfolio-grid" id="grid-houtbewerking">
-        </div>
+        <div class="portfolio-grid" id="grid-houtbewerking"></div>
     </section>
 
     <footer>
@@ -210,8 +208,9 @@
                 if (!response.ok) throw new Error(`Kan map ${folderPath} niet laden.`);
                 
                 const files = await response.json();
-                
                 files.reverse();
+
+                let galleryHtml = '';
 
                 files.forEach(file => {
                     const fileExtension = file.name.split('.').pop().toLowerCase();
@@ -219,16 +218,17 @@
                     if (file.type === 'file' && imageExtensions.includes(fileExtension)) {
                         const fileUrl = `${relativeHrefPrefix}${file.name}`;
                         
-                        gridContainer.innerHTML += `
+                        galleryHtml += `
                             <a class="gallery-link" href="${fileUrl}">
-                                <img class="gallery-image" src="${fileUrl}" alt="Portfolio item" loading="lazy" />
+                                <img class="gallery-image" src="${fileUrl}" alt="Portfolio item" loading="lazy" width="300" height="300" />
                             </a>
                         `;
                     }
                 });
 
+                gridContainer.innerHTML = galleryHtml;
+
             } catch (error) {
-                
                 gridContainer.innerHTML = '<p style="color: #666;">Afbeeldingen konden niet worden geladen.</p>';
             }
         }
@@ -236,6 +236,7 @@
         async function initPage() {
             await fetchAndBuildGallery(fotoFolder, 'grid-fotografie', './foto_cached/');
             await fetchAndBuildGallery(woodFolder, 'grid-houtbewerking', './woodworking/foto_cached/');
+            
             baguetteBox.run('#grid-fotografie', { animation: 'slideIn', noScrollbars: true });
             baguetteBox.run('#grid-houtbewerking', { animation: 'slideIn', noScrollbars: true });
         }
